@@ -19,6 +19,7 @@ WHITELIST = config["allowed_users"]
 START_WAITING_TIME = config["start_waiting_time"]
 BG_WAITING_TIME = config["bg_waiting_time"]
 APP_ID = config['app_id']
+ADDR_SERVER = config['addr']
 
 # Считываем данные токенов
 load_dotenv(find_dotenv())
@@ -39,7 +40,7 @@ async def send_message(text, message):
     print(f'{message.chat.id} = {text}')
 
 def get_data_server_steam_api():
-    url = f'https://api.steampowered.com/IGameServersService/GetServerList/v1/?key={STEAMAPI}&filter=addr\81.30.105.180&filter=appid\{APP_ID}'
+    url = f'https://api.steampowered.com/IGameServersService/GetServerList/v1/?key={STEAMAPI}&filter=addr\{ADDR_SERVER}&filter=appid\{APP_ID}'
 
     response = requests.get(url)
     data = response.json()
