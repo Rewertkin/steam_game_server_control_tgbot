@@ -1,0 +1,14 @@
+{
+    "allowed_users": [
+        111111111,
+        222222222
+    ],
+    "app_id": 892970,
+    "start_server": "start.bat",
+    "stop_server": "stop.bat",
+    "update_server": "update.bat",
+    "start_waiting_time": 1800,
+    "bg_waiting_time": 3600,
+    "stop_waiting_time": 1800,
+    "game_version": 0
+}
