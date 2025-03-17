@@ -10,6 +10,6 @@
     "start_waiting_time": 1800,
     "bg_waiting_time": 3600,
     "stop_waiting_time": 1800,
-    "addr": "81.30.105.180",
+    "addr": "11.11.11.11",
     "game_version": 0
 }
