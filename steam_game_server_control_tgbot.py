@@ -38,8 +38,7 @@ async def send_message(text, message):
 
 def get_data_server_steam_api():
     """Получить данные сервера из Steam API"""
-    url = fr"""https://api.steampowered.com/IGameServersService/GetServerList/v1/?key=
-    {STEAMAPI}&filter=addr\{ADDR_SERVER}&filter=appid\{APP_ID}"""
+    url = fr"""https://api.steampowered.com/IGameServersService/GetServerList/v1/?key={STEAMAPI}&filter=addr\{ADDR_SERVER}&filter=appid\{APP_ID}"""
 
     response = requests.get(url, timeout=10)
     data = response.json()
@@ -106,12 +105,12 @@ async def update_server():
 
 async def stop_server():
     """Остановить сервер"""
-    stop_process = await asyncio.create_subprocess_shell(config["stop_server"])
+    stop_process = await asyncio.create_subprocess_shell(f'start cmd /c "{config["stop_server"]}"')
     try:
         await asyncio.wait_for(stop_process.wait(), config["stop_waiting_time"])
         return True
     except asyncio.TimeoutError:
-        stop_process.terminate()  # Принудительное завершение, если превышено время
+        stop_process.kill()  # Принудительное завершение, если превышено время
         return False
 
 def get_server_players():
@@ -160,7 +159,7 @@ async def manual_server_stop(message: types.Message):
     """Ручная остановка сервера"""
     if check_server_online():
         await send_message('Сервер останавливается...', message)
-        result = stop_server()
+        result = await stop_server()
         if result is False:
             await send_message('❌Что-то пошло не так!', message)
             return
@@ -176,7 +175,7 @@ async def manual_server_update(message: types.Message):
         await send_message('Сервер уже обновляется! Запуск нового обновления не требуется!', message)
         return
     await send_message('Сервер обновляется...', message)
-    result = update_server()
+    result = await update_server()
     if result:
         await send_message('Сервер обновлен и запущен!', message)
         return
@@ -188,10 +187,7 @@ async def get_server_status(message: types.Message):
     server_data = get_data_server_steam_api()
     if check_server_online(server_data):
         message_data = SimpleNamespace(**get_data_server_steam_api().get('response').get('servers')[0])
-        await send_message(f"""✅Сервер работает!\nНазвание сервера: {message_data.name}
-                           \nАдрес сервера: {message_data.addr}
-                           \nКоличество игроков: {message_data.players}
-                           /{message_data.max_players}""",
+        await send_message(f"✅Сервер работает!\nНазвание сервера: {message_data.name}\nАдрес сервера: {message_data.addr}\nКоличество игроков: {message_data.players}/{message_data.max_players}",
                            message)
     elif check_status_update() is False:
         await send_message('🔄 Сервер обновляется...', message)
